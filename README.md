@@ -7,6 +7,7 @@ This project presents the design and development of an autonomous mobile robot c
 Developed as part of the **EC6090 – Robotics and Automation Mini Project** at the **University of Jaffna**, this project focuses on building a fully autonomous robot by combining line-following navigation, obstacle avoidance, color-based decision-making, and pick-and-place functionality into a single embedded system.
 
 ---
+![](figures/robo.jpeg)
 
 ## ⟡ Project Objectives
 
@@ -102,3 +103,24 @@ Line-Following-Robot/
 │          └── Setup.png
 │
 │── README.md
+
+```
+
+## 🤖Team members
+![](figures/group.jpeg)
+
+<br>
+
+---
+<br>
+
+## 📜 License
+
+This project is developed for academic and research purposes.
+
+<br>
+
+---
+
+<br>
+
