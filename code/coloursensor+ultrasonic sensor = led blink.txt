@@ -1,0 +1,93 @@
+#include <Arduino.h>
+#include <Wire.h>
+#include "Adafruit_TCS34725.h"
+
+// ================= PINS =================
+#define TRIG_PIN 4
+#define ECHO_PIN 18
+#define LED_PIN 5   // UPDATED
+
+// ================= COLOR SENSOR =================
+Adafruit_TCS34725 tcs = Adafruit_TCS34725(
+  TCS34725_INTEGRATIONTIME_154MS,  // higher integration time
+  TCS34725_GAIN_16X               // higher gain for distance
+);
+
+// ================= ULTRASONIC =================
+long getDistance() {
+  digitalWrite(TRIG_PIN, LOW);
+  delayMicroseconds(2);
+
+  digitalWrite(TRIG_PIN, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG_PIN, LOW);
+
+  long duration = pulseIn(ECHO_PIN, HIGH, 30000);
+  if (duration == 0) return 999;
+
+  return duration * 0.034 / 2;
+}
+
+// ================= GREEN DETECTION =================
+bool isGreen() {
+  uint16_t r, g, b, c;
+  tcs.getRawData(&r, &g, &b, &c);
+
+  // Normalize values
+  float sum = r + g + b;
+  if (sum == 0) return false;
+
+  float r_norm = r / sum;
+  float g_norm = g / sum;
+  float b_norm = b / sum;
+
+  Serial.print("R: "); Serial.print(r_norm);
+  Serial.print(" G: "); Serial.print(g_norm);
+  Serial.print(" B: "); Serial.println(b_norm);
+
+  // Relaxed condition → detect from further distance
+  if (g_norm > 0.40 && g_norm > r_norm && g_norm > b_norm) {
+    return true;
+  }
+
+  return false;
+}
+
+// ================= SETUP =================
+void setup() {
+  Serial.begin(115200);
+
+  pinMode(TRIG_PIN, OUTPUT);
+  pinMode(ECHO_PIN, INPUT);
+  pinMode(LED_PIN, OUTPUT);
+
+  Wire.begin(21, 22);
+
+  if (!tcs.begin()) {
+    Serial.println("❌ Color sensor not found!");
+    while (1);
+  }
+
+  Serial.println("✅ System Ready");
+}
+
+// ================= LOOP =================
+void loop() {
+
+  long distance = getDistance();
+  bool green = isGreen();
+
+  Serial.print("Distance: ");
+  Serial.print(distance);
+  Serial.print(" cm | Green: ");
+  Serial.println(green);
+
+  // ===== AND LOGIC =====
+  if (distance > 0 && distance <= 5 && green) {
+    digitalWrite(LED_PIN, HIGH);
+  } else {
+    digitalWrite(LED_PIN, LOW);
+  }
+
+  delay(100);
+}
