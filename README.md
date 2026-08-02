@@ -92,15 +92,11 @@ The overall workflow of the robot can be summarized as follows:
 ```text
 Line-Following-Robot/
 │── code/
-│   ├── main.ino
-│   ├── line_following.ino
-│   ├── obstacle_avoidance.ino
-│   ├── color_detection.ino
 │   └── servo_control.ino
 │
-│── docs/
-│   └── images/
-│          └── Setup.png
+│── figures/
+│   └── group.jpeg
+│          
 │
 │── README.md
 
